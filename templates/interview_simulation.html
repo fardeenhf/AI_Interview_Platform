@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Interview Simulation - AI Interview Platform</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .header {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .simulation-container {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        .progress-bar {
+            width: 100%;
+            height: 20px;
+            background-color: #e9ecef;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            overflow: hidden;
+        }
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+            transition: width 0.3s ease;
+        }
+        .question-card {
+            background: #f8f9fa;
+            border: 2px solid #007bff;
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 25px;
+        }
+        .question-number {
+            background: #007bff;
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 18px;
+            margin-right: 15px;
+        }
+        .question-text {
+            color: #333;
+            font-size: 18px;
+            line-height: 1.6;
+            margin: 0;
+            display: inline;
+        }
+        .answer-section {
+            margin-top: 25px;
+        }
+        .answer-label {
+            font-weight: bold;
+            color: #495057;
+            margin-bottom: 10px;
+            display: block;
+        }
+        .answer-textarea {
+            width: 100%;
+            min-height: 150px;
+            padding: 15px;
+            border: 2px solid #ced4da;
+            border-radius: 8px;
+            font-size: 16px;
+            line-height: 1.5;
+            resize: vertical;
+            font-family: inherit;
+        }
+        .answer-textarea:focus {
+            outline: none;
+            border-color: #007bff;
+            box-shadow: 0 0 0 3px rgba(0,123,255,0.25);
+        }
+        .button-group {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 25px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .btn {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
+            color: white;
+        }
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(0,123,255,0.3);
+        }
+        .btn-success {
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+            color: white;
+        }
+        .btn-success:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(40,167,69,0.3);
+        }
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+        .btn-secondary:hover {
+            background: #545b62;
+        }
+        .btn-outline {
+            background: transparent;
+            border: 2px solid #6c757d;
+            color: #6c757d;
+        }
+        .btn-outline:hover {
+            background: #6c757d;
+            color: white;
+        }
+        .completion-summary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 12px;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .summary-stats {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-top: 20px;
+        }
+        .stat-item {
+            text-align: center;
+        }
+        .stat-number {
+            font-size: 2.5em;
+            font-weight: bold;
+            display: block;
+        }
+        .stat-label {
+            font-size: 0.9em;
+            opacity: 0.9;
+        }
+        .question-review {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 15px;
+        }
+        .question-review h4 {
+            color: #495057;
+            margin: 0 0 15px 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .question-review .question-text {
+            font-size: 16px;
+            color: #333;
+            margin-bottom: 15px;
+            padding-left: 50px;
+        }
+        .answer-display {
+            background: white;
+            border: 1px solid #ced4da;
+            border-radius: 6px;
+            padding: 15px;
+            margin-top: 10px;
+            white-space: pre-wrap;
+            line-height: 1.5;
+        }
+        .no-answer {
+            color: #6c757d;
+            font-style: italic;
+        }
+        .alert {
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 4px;
+            text-align: center;
+        }
+        .alert-success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .alert-info {
+            background-color: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+        .tips-section {
+            background: #e8f5e8;
+            border-left: 4px solid #28a745;
+            padding: 20px;
+            margin-top: 20px;
+            border-radius: 4px;
+        }
+        .evaluation-section {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-left: 4px solid #007bff;
+        }
+        .evaluation-section h3 {
+            margin: 0 0 15px 0;
+            color: #495057;
+        }
+        .evaluation-section ul {
+            margin: 0;
+            padding-left: 20px;
+        }
+        .evaluation-section li {
+            margin-bottom: 8px;
+            line-height: 1.5;
+        }
+        @media (max-width: 768px) {
+            .button-group {
+                flex-direction: column;
+            }
+            .btn {
+                width: 100%;
+                text-align: center;
+            }
+            .summary-stats {
+                flex-direction: column;
+                gap: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>AI Interview Platform</h1>
+        <div>
+            <a href="{{ url_for('dashboard') }}" class="btn btn-secondary">← Dashboard</a>
+        </div>
+    </div>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="alert alert-{{ 'success' if category == 'success' else 'info' }}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+    {% if completed %}
+        <!-- Final Evaluation Summary -->
+        <div class="completion-summary">
+            <h2>🎉 Interview Simulation Completed!</h2>
+            <p>You've successfully completed your practice interview. Here's your comprehensive evaluation:</p>
+            <div class="summary-stats">
+                <div class="stat-item">
+                    <span class="stat-number">{{ total_questions }}</span>
+                    <span class="stat-label">Total Questions</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">{{ answered_questions }}</span>
+                    <span class="stat-label">Questions Answered</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">{{ (answered_questions / total_questions * 100)|round|int }}%</span>
+                    <span class="stat-label">Completion Rate</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">{{ overall_score }}/10</span>
+                    <span class="stat-label">Overall Score</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="simulation-container">
+            <h2>📊 Final Evaluation</h2>
+
+            {% if strengths %}
+            <div class="evaluation-section">
+                <h3 style="color: #28a745;">✅ Your Strengths</h3>
+                <ul>
+                    {% for strength in strengths %}
+                    <li>{{ strength }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+            {% endif %}
+
+            {% if areas_for_improvement %}
+            <div class="evaluation-section">
+                <h3 style="color: #ffc107;">🔄 Areas for Improvement</h3>
+                <ul>
+                    {% for area in areas_for_improvement %}
+                    <li>{{ area }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+            {% endif %}
+
+            <div class="evaluation-section">
+                <h3 style="color: #007bff;">📚 Suggested Learning Topics</h3>
+                <ul>
+                    {% for topic in learning_topics %}
+                    <li>{{ topic }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+
+        <div class="simulation-container">
+            <h2>📝 Detailed Question Review</h2>
+            <p>Review your responses with individual feedback and scores.</p>
+
+            {% for i in range(questions|length) %}
+            <div class="question-review">
+                <h4>
+                    <span class="question-number">{{ i + 1 }}</span>
+                    Question {{ i + 1 }} of {{ questions|length }}
+                    {% if scores and scores[i|string] %}
+                        <span style="color: #007bff; font-size: 0.9em; margin-left: 10px;">Score: {{ scores[i|string] }}/10</span>
+                    {% endif %}
+                </h4>
+                <div class="question-text">{{ questions[i] }}</div>
+
+                {% if feedback and feedback[i|string] %}
+                <div class="feedback-section" style="margin: 15px 0; padding: 15px; background: #f8f9fa; border-radius: 8px; border-left: 4px solid #007bff;">
+                    <h5 style="margin: 0 0 10px 0; color: #007bff;">💬 Feedback</h5>
+                    <p style="margin: 0 0 10px 0; color: #333;">{{ feedback[i|string]['feedback'] }}</p>
+                    {% if feedback[i|string]['improvement'] %}
+                    <h5 style="margin: 5px 0; color: #28a745;">💡 Suggested Improvements</h5>
+                    <p style="margin: 0; color: #155724;">{{ feedback[i|string]['improvement'] }}</p>
+                    {% endif %}
+                </div>
+                {% endif %}
+
+                <div class="answer-label">Your Answer:</div>
+                <div class="answer-display">
+                    {% if answers[i|string] %}
+                        {{ answers[i|string] }}
+                    {% else %}
+                        <span class="no-answer">No answer provided</span>
+                    {% endif %}
+                </div>
+            </div>
+            {% endfor %}
+
+            <div class="button-group">
+                <a href="{{ url_for('reset_interview_simulation') }}" class="btn btn-secondary">🔄 Start New Simulation</a>
+                <a href="{{ url_for('dashboard') }}" class="btn btn-primary">🏠 Back to Dashboard</a>
+            </div>
+        </div>
+
+    {% else %}
+        <!-- Active Interview Simulation -->
+        <div class="simulation-container">
+            <div class="progress-bar">
+                <div class="progress-fill" style="width: {{ ((question_index + 1) / total_questions * 100)|round }}%"></div>
+            </div>
+
+            <div style="text-align: center; margin-bottom: 20px;">
+                <h3>Question {{ question_index + 1 }} of {{ total_questions }}</h3>
+                <small style="color: #6c757d;">{{ ((question_index + 1) / total_questions * 100)|round }}% Complete</small>
+            </div>
+
+            <div class="question-card">
+                <div class="question-text">
+                    <span class="question-number">{{ question_index + 1 }}</span>
+                    {{ question }}
+                </div>
+            </div>
+
+            <!-- Show feedback if answer was previously submitted -->
+            {% if feedback %}
+            <div class="feedback-section" style="margin: 20px 0; padding: 20px; background: linear-gradient(135deg, #e8f5e8 0%, #f8f9fa 100%); border-radius: 12px; border-left: 5px solid #28a745; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
+                <h4 style="margin: 0 0 15px 0; color: #28a745; display: flex; align-items: center; gap: 10px;">
+                    <i class="fas fa-check-circle"></i>
+                    Your Answer Feedback
+                </h4>
+                <div style="display: grid; grid-template-columns: auto 1fr; gap: 15px; align-items: start;">
+                    <div style="text-align: center;">
+                        <div style="font-size: 2em; font-weight: bold; color: #007bff; margin-bottom: 5px;">{{ feedback['score'] }}/10</div>
+                        <div style="font-size: 0.9em; color: #666;">Score</div>
+                    </div>
+                    <div>
+                        <p style="margin: 0 0 10px 0; color: #333; line-height: 1.5;"><strong>Feedback:</strong> {{ feedback['feedback'] }}</p>
+                        {% if feedback['improvement'] %}
+                        <p style="margin: 0; color: #155724; line-height: 1.5;"><strong>💡 Suggestions:</strong> {{ feedback['improvement'] }}</p>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+
+            <form method="post" class="answer-section">
+                <label for="answer" class="answer-label">Your Answer:</label>
+                <textarea
+                    name="answer"
+                    id="answer"
+                    class="answer-textarea"
+                    placeholder="Type your answer here... Take your time to think through the question and provide a detailed response."
+                    required>{{ answer }}</textarea>
+
+                <div class="button-group">
+                    <div>
+                        {% if question_index > 0 %}
+                        <button type="submit" name="action" value="previous" class="btn btn-secondary">⬅️ Previous</button>
+                        {% endif %}
+                    </div>
+
+                    <div>
+                        {% if question_index < total_questions - 1 %}
+                        <button type="submit" name="action" value="next" class="btn btn-primary">Next Question ➡️</button>
+                        {% else %}
+                        <button type="submit" name="action" value="finish" class="btn btn-success">🎉 Finish Interview</button>
+                        {% endif %}
+                    </div>
+                </div>
+            </form>
+
+            <div class="tips-section">
+                <h4>💡 Answering Tips</h4>
+                <ul>
+                    <li><strong>Think before typing:</strong> Consider the question and structure your response</li>
+                    <li><strong>Be specific:</strong> Use concrete examples from your experience</li>
+                    <li><strong>Show your thought process:</strong> Explain how you approach problems</li>
+                    <li><strong>Practice aloud:</strong> Speaking your answers helps in real interviews</li>
+                </ul>
+            </div>
+        </div>
+    {% endif %}
+</body>
+</html>
